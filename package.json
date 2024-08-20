@@ -1,0 +1,35 @@
+{
+    "name": "@wocker/dns-plugin",
+    "version": "1.0.0",
+    "author": "Kris Papercut <krispcut@gmail.com>",
+    "description": "DNS plugin for wocker",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "homepage": "https://kearisp.github.io/wocker/plugins/dns",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kearisp/wocker-dns-plugin.git"
+    },
+    "bugs": {
+        "url": "https://github.com/kearisp/wocker-dns-plugin/issues"
+    },
+    "keywords": [
+        "wocker",
+        "wocker-plugin"
+    ],
+    "scripts": {
+        "prepare": "npm run build",
+        "watch": "tsc -w",
+        "build": "tsc",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "@wocker/core": "^1.0.12",
+        "@wocker/utils": "^1.0.5",
+        "cli-table3": "^0.6.5"
+    },
+    "devDependencies": {
+        "typescript": "^5.5.4"
+    }
+}
