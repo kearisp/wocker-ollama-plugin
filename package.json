@@ -4,14 +4,15 @@
     "author": "Kris Papercut <krispcut@gmail.com>",
     "description": "Ollama plugin for wocker",
     "license": "MIT",
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
+    "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
     "keywords": [
         "wocker",
         "docker",
-        "plugin"
+        "plugin",
+        "ollama"
     ],
-    "homepage": "https://kearisp.github.io/wocker/plugins/ollama",
+    "homepage": "https://kearisp.github.io/wocker/docs/plugins/ollama",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/kearisp/wocker-ollama-plugin.git"
@@ -29,7 +30,6 @@
         "@wocker/core": "^1.0.20",
         "@wocker/utils": "^1.0.8",
         "cli-table3": "^0.6.4",
-        "date-fns": "^2.30.0",
         "path": "^0.12.7"
     },
     "devDependencies": {
