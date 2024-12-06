@@ -1,6 +1,5 @@
 import {
     Injectable,
-    AppConfigService,
     DockerService
 } from "@wocker/core";
 
@@ -14,7 +13,7 @@ export class OllamaService {
         protected readonly dockerService: DockerService
     ) {}
 
-    public async start(restart?: boolean, rebuild?: boolean) {
+    public async start(restart?: boolean): Promise<void> {
         let container = await this.dockerService.getContainer(this.containerName);
 
         if(restart && container) {
@@ -28,7 +27,8 @@ export class OllamaService {
                 name: this.containerName,
                 image: this.imageName,
                 env: {
-                    VIRTUAL_HOST: this.containerName
+                    VIRTUAL_HOST: this.containerName,
+                    VIRTUAL_PORT: "11434"
                 },
                 volumes: [
                     "wocker-ollama-default:/root/.ollama"
@@ -43,11 +43,19 @@ export class OllamaService {
         } = await container.inspect();
 
         if(!Running) {
+            console.info("Starting ollama...");
             await container.start();
         }
     }
 
-    public async stop() {
+    public async stop(): Promise<void> {
         await this.dockerService.removeContainer(this.containerName);
+    }
+
+    public async run(model: string): Promise<void> {
+        await this.dockerService.exec(this.containerName, {
+            cmd: ["ollama", "run", model],
+            tty: true
+        });
     }
 }

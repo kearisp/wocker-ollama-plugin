@@ -1,6 +1,7 @@
 import {
     Controller,
     Description,
+    Param,
     Command,
     Option
 } from "@wocker/core";
@@ -30,5 +31,14 @@ export class OllamaController {
     @Description("Stopping ollama service")
     public async stop(): Promise<void> {
         await this.ollamaService.stop();
+    }
+
+    @Command("ollama:run <model>")
+    @Description("")
+    public async run(
+        @Param("model")
+        model: string
+    ) {
+        await this.ollamaService.run(model);
     }
 }
