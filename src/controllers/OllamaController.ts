@@ -16,6 +16,7 @@ export class OllamaController {
     ) {}
 
     @Command("ollama:create [name]")
+    @Description("Creates a new Ollama service. Specify the optional name or enter it when prompted.")
     public async create(
         @Param("name")
         name?: string
