@@ -1,6 +1,7 @@
 import {
     Injectable,
     AppConfigService,
+    PluginConfigService,
     DockerService,
     ProxyService,
     FileSystem,
@@ -22,6 +23,7 @@ export class OllamaService {
 
     public constructor(
         protected readonly appConfigService: AppConfigService,
+        protected readonly pluginConfigService: PluginConfigService,
         protected readonly proxyService: ProxyService,
         protected readonly dockerService: DockerService,
         @Inject(PLUGIN_DIR_KEY)
@@ -108,7 +110,7 @@ export class OllamaService {
             }
         }
 
-        if(!this.appConfigService.isVersionGTE || !this.appConfigService.isVersionGTE("1.0.19")) {
+        if(!this.pluginConfigService.isVersionGTE("1.0.19")) {
             throw new Error("Please update wocker for using volume storage");
         }
 
@@ -158,7 +160,7 @@ export class OllamaService {
         }
 
         if(!container) {
-            if(!this.appConfigService.isVersionGTE || !this.appConfigService.isVersionGTE("1.0.19")) {
+            if(!this.pluginConfigService.isVersionGTE("1.0.19")) {
                 throw new Error("Please update wocker for using volume storage");
             }
 
