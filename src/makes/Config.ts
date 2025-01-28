@@ -22,6 +22,12 @@ export abstract class Config {
         this.services = new ConfigCollection(Service, services);
     }
 
+    public hasService(name: string): boolean {
+        const service = this.services.getConfig(name);
+
+        return !!service;
+    }
+
     public getService(name: string): Service {
         const service = this.services.getConfig(name);
 
@@ -57,7 +63,13 @@ export abstract class Config {
     }
 
     public unsetService(name: string): void {
-        this.services.removeConfig(name);
+        const service = this.getService(name);
+
+        this.services.removeConfig(service.name);
+
+        if(this.default === service.name) {
+            delete this.default;
+        }
     }
 
     public toObject(): ConfigProps {
