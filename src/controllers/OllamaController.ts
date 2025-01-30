@@ -19,9 +19,63 @@ export class OllamaController {
     @Description("Creates a new Ollama service. Specify the optional name or enter it when prompted.")
     public async create(
         @Param("name")
-        name?: string
+        name?: string,
+        @Option("image", {
+            type: "string",
+            alias: "i",
+            description: "The image name to start the service with"
+        })
+        imageName?: string,
+        @Option("image-version", {
+            type: "string",
+            alias: "I",
+            description: "The image version to start the service with"
+        })
+        imageVersion?: string,
+        @Option("volume", {
+            type: "string",
+            alias: "v",
+            description: "Specify volume name"
+        })
+        volume?: string
     ): Promise<void> {
-        await this.ollamaService.create(name);
+        await this.ollamaService.create({
+            name,
+            imageName,
+            imageVersion,
+            volume
+        });
+    }
+
+    @Command("ollama:upgrade [name]")
+    public async upgrade(
+        @Param("name")
+        name?: string,
+        @Option("image", {
+            type: "string",
+            alias: "i",
+            description: "The image name to start the service with"
+        })
+        imageName?: string,
+        @Option("image-version", {
+            type: "string",
+            alias: "I",
+            description: "The image version to start the service with"
+        })
+        imageVersion?: string,
+        @Option("volume", {
+            type: "string",
+            alias: "v",
+            description: "Specify volume name"
+        })
+        volume?: string
+    ): Promise<void> {
+        await this.ollamaService.upgrade({
+            name,
+            imageName,
+            imageVersion,
+            volume
+        });
     }
 
     @Command("ollama:destroy <name>")

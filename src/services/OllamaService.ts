@@ -12,13 +12,11 @@ import CliTable from "cli-table3";
 import {promptText, promptConfirm} from "@wocker/utils";
 
 import {Config} from "../makes/Config";
-import {Service} from "../makes/Service";
+import {Service, ServiceProps} from "../makes/Service";
 
 
 @Injectable()
 export class OllamaService {
-    protected containerName: string = "ollama.ws";
-    protected imageName: string = "ollama/ollama";
     protected _config?: Config;
 
     public constructor(
@@ -62,17 +60,22 @@ export class OllamaService {
         return this._config;
     }
 
-    public async create(name?: string) {
-        if(!name) {
-            name = await promptText({
+    public async create(props: Partial<ServiceProps> = {}): Promise<void> {
+        if(props.name && this.config.hasService(props.name)) {
+            console.info(`Service "${props.name}" is already exists`);
+            delete props.name;
+        }
+
+        if(!props.name) {
+            props.name = await promptText({
                 message: "Ollama service name:",
                 type: "string",
-                validate: (value?: string) => {
-                    if(!value) {
+                validate: (name?: string) => {
+                    if(!name) {
                         return "Service name is required";
                     }
 
-                    if(this.config.services.getConfig(value)) {
+                    if(this.config.hasService(name)) {
                         return "Service already exists";
                     }
 
@@ -81,22 +84,43 @@ export class OllamaService {
             }) as string;
         }
 
-        const service = new Service({name});
+        const service = new Service(props as ServiceProps);
 
         this.config.setService(service);
 
         this.config.save();
     }
 
+    public async upgrade(props: Partial<ServiceProps> = {}): Promise<void> {
+        const service = this.config.getServiceOrDefault(props.name);
+        let changed = false;
+
+        if(props.imageName) {
+            service.imageName = props.imageName;
+            changed = true;
+        }
+
+        if(props.imageVersion) {
+            service.imageVersion = props.imageVersion;
+            changed = true;
+        }
+
+        if(props.volume) {
+            service.volume = props.volume;
+            changed = true;
+        }
+
+        if(changed) {
+            this.config.setService(service);
+            this.config.save();
+        }
+    }
+
     public async destroy(name: string, force?: boolean, yes?: boolean): Promise<void> {
         const service = this.config.getService(name);
 
-        if(service.name === this.config.default) {
-            if(!force) {
-                throw new Error(`Can't destroy default service`);
-            }
-
-            delete this.config.default;
+        if(!force && service.name === this.config.default) {
+            throw new Error(`Can't destroy default service`);
         }
 
         if(!yes) {
@@ -136,10 +160,10 @@ export class OllamaService {
         return table.toString();
     }
 
-    public async use(name: string) {
-        this.config.getService(name);
+    public async use(name: string): Promise<void> {
+        const service = this.config.getService(name);
 
-        this.config.default = name;
+        this.config.default = service.name;
 
         this.config.save();
     }
@@ -170,7 +194,7 @@ export class OllamaService {
 
             container = await this.dockerService.createContainer({
                 name: service.containerName,
-                image: this.imageName,
+                image: service.imageTag,
                 env: {
                     VIRTUAL_HOST: service.containerName,
                     VIRTUAL_PORT: "80",
