@@ -1,5 +1,3 @@
-import {ConfigCollection} from "@wocker/core";
-
 import {Service, ServiceProps} from "./Service";
 
 
@@ -10,7 +8,7 @@ type ConfigProps = {
 
 export abstract class Config {
     public default?: string;
-    public services: ConfigCollection<Service, ServiceProps>;
+    public services: Service[];
 
     public constructor(props: ConfigProps) {
         const {
@@ -19,17 +17,17 @@ export abstract class Config {
         } = props;
 
         this.default = defaultService;
-        this.services = new ConfigCollection(Service, services);
+        this.services = services.map((s) => new Service(s));
     }
 
     public hasService(name: string): boolean {
-        const service = this.services.getConfig(name);
+        const service = this.services.find((service) => service.name === name);
 
         return !!service;
     }
 
     public getService(name: string): Service {
-        const service = this.services.getConfig(name);
+        const service = this.services.find((service) => service.name === name);
 
         if(!service) {
             throw new Error(`Ollama "${name}" service not found`);
@@ -55,19 +53,26 @@ export abstract class Config {
     }
 
     public setService(service: Service): void {
-        this.services.setConfig(service);
+        let exists = false;
 
-        if(!this.default) {
-            this.default = service.name;
+        for(let i = 0; i < this.services.length; i++) {
+            if(this.services[i].name === service.name) {
+                exists = true;
+                this.services[i] = service;
+            }
+        }
+
+        if(!exists) {
+            this.services.push(service);
         }
     }
 
     public unsetService(name: string): void {
-        const service = this.getService(name);
+        this.services = this.services.filter((service) => {
+            return service.name !== name;
+        });
 
-        this.services.removeConfig(service.name);
-
-        if(this.default === service.name) {
+        if(this.default === name) {
             delete this.default;
         }
     }
@@ -75,7 +80,9 @@ export abstract class Config {
     public toObject(): ConfigProps {
         return {
             default: this.default,
-            services: this.services.toArray()
+            services: this.services.length > 0
+                ? this.services.map((service) => service.toObject())
+                : undefined
         };
     }
 

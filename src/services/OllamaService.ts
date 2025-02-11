@@ -153,7 +153,7 @@ export class OllamaService {
             head: ["Name"]
         });
 
-        for(const service of this.config.services.items) {
+        for(const service of this.config.services) {
             table.push([service.name]);
         }
 
