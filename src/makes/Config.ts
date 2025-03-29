@@ -65,6 +65,10 @@ export abstract class Config {
         if(!exists) {
             this.services.push(service);
         }
+
+        if(!this.default) {
+            this.default = service.name;
+        }
     }
 
     public unsetService(name: string): void {

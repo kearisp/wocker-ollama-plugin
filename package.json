@@ -1,6 +1,6 @@
 {
     "name": "@wocker/ollama-plugin",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "author": "Kris Papercut <krispcut@gmail.com>",
     "description": "Ollama plugin for wocker",
     "license": "MIT",
@@ -21,7 +21,7 @@
         "url": "https://github.com/kearisp/wocker-ollama-plugin/issues"
     },
     "scripts": {
-        "prepare": "npm run build",
+        "prepublishOnly": "npm run build",
         "watch": "tsc -w",
         "build": "tsc",
         "test": "echo \"Error: no test specified\" && exit 1"
