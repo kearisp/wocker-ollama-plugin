@@ -141,7 +141,12 @@ export class OllamaService {
         await this.dockerService.removeContainer(service.containerName);
 
         if(await this.dockerService.hasVolume(service.volume)) {
-            await this.dockerService.rmVolume(service.volume);
+            if(service.volume !== service.defaultVolume) {
+                console.info(`Deletion of custom volume "${service.volume}" skipped.`);
+            }
+            else {
+                await this.dockerService.rmVolume(service.volume);
+            }
         }
 
         this.config.unsetService(service.name);
@@ -160,7 +165,11 @@ export class OllamaService {
         return table.toString();
     }
 
-    public async use(name: string): Promise<void> {
+    public async use(name?: string): Promise<void|string> {
+        if(!name) {
+            return this.config.default;
+        }
+
         const service = this.config.getService(name);
 
         this.config.default = service.name;

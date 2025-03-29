@@ -128,6 +128,15 @@ export class OllamaController {
         await this.ollamaService.stop(name);
     }
 
+    @Command("ollama:use [name]")
+    @Description("Sets a specified Ollama service as the default or retrieves the current default service name if no service is specified.")
+    public async use(
+        @Param("name")
+        name?: string
+    ) {
+        return this.ollamaService.use(name);
+    }
+
     @Command("ollama:run <name> <model>")
     @Description("Runs ollama model")
     public async run(
