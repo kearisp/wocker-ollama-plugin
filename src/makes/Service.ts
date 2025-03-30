@@ -1,30 +1,28 @@
-import {Config, ConfigProperties} from "@wocker/core";
-
-
-export type ServiceProps = ConfigProperties & {
+export type ServiceProps = {
+    name: string;
     imageName?: string;
     imageVersion?: string;
     volume?: string;
 };
 
-export class Service extends Config<ServiceProps> {
+export class Service {
+    public name: string;
     public imageName?: string;
     public imageVersion?: string;
-    public volume: string;
+    protected _volume?: string;
 
     public constructor(props: ServiceProps) {
-        super(props);
-
         const {
             name,
             imageName,
             imageVersion,
-            volume = `wocker-ollama-${name}`
+            volume
         } = props;
 
+        this.name = name;
         this.imageName = imageName;
         this.imageVersion = imageVersion;
-        this.volume = volume;
+        this._volume = volume;
     }
 
     public get imageTag(): string {
@@ -44,5 +42,30 @@ export class Service extends Config<ServiceProps> {
 
     public get containerName(): string {
         return `ollama-${this.name}.ws`;
+    }
+
+    public get volume(): string {
+        if(!this._volume) {
+            this._volume = this.defaultVolume;
+        }
+
+        return this._volume;
+    }
+
+    public set volume(volume: string) {
+        this._volume = volume;
+    }
+
+    public get defaultVolume(): string {
+        return `wocker-ollama-${this.name}`;
+    }
+
+    public toObject(): ServiceProps {
+        return {
+            name: this.name,
+            imageName: this.imageName,
+            imageVersion: this.imageVersion,
+            volume: this._volume
+        };
     }
 }
