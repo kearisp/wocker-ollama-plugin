@@ -48,6 +48,7 @@ export class OllamaController {
     }
 
     @Command("ollama:upgrade [name]")
+    @Description("Upgrade ollama service configuration.")
     public async upgrade(
         @Param("name")
         name?: string,

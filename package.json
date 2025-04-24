@@ -1,6 +1,6 @@
 {
     "name": "@wocker/ollama-plugin",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "author": "Kris Papercut <krispcut@gmail.com>",
     "description": "Ollama plugin for wocker",
     "license": "MIT",
@@ -33,7 +33,7 @@
         "path": "^0.12.7"
     },
     "devDependencies": {
-        "@types/node": "^22.13.14",
-        "typescript": "^5.8.2"
+        "@types/node": "^22.14.1",
+        "typescript": "^5.8.3"
     }
 }
