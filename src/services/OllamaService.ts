@@ -9,7 +9,7 @@ import {
     PLUGIN_DIR_KEY
 } from "@wocker/core";
 import CliTable from "cli-table3";
-import {promptText, promptConfirm} from "@wocker/utils";
+import {promptInput, promptConfirm} from "@wocker/utils";
 
 import {Config} from "../makes/Config";
 import {Service, ServiceProps} from "../makes/Service";
@@ -60,6 +60,10 @@ export class OllamaService {
         return this._config;
     }
 
+    public get services(): Service[] {
+        return this.config.services;
+    }
+
     public async create(props: Partial<ServiceProps> = {}): Promise<void> {
         if(props.name && this.config.hasService(props.name)) {
             console.info(`Service "${props.name}" is already exists`);
@@ -67,9 +71,9 @@ export class OllamaService {
         }
 
         if(!props.name) {
-            props.name = await promptText({
-                message: "Ollama service name:",
-                type: "string",
+            props.name = await promptInput({
+                message: "Ollama service name",
+                type: "text",
                 validate: (name?: string) => {
                     if(!name) {
                         return "Service name is required";
@@ -237,11 +241,29 @@ export class OllamaService {
         await this.dockerService.removeContainer(service.containerName);
     }
 
-    public async run(name: string, model: string): Promise<void> {
+    public async run(name: string | undefined, model: string): Promise<void> {
         const service = this.config.getServiceOrDefault(name);
 
         await this.dockerService.exec(service.containerName, {
             cmd: ["ollama", "run", model],
+            tty: true
+        });
+    }
+
+    public async rm(name: string | undefined, model: string): Promise<void> {
+        const service = this.config.getServiceOrDefault(name);
+
+        await this.dockerService.exec(service.containerName, {
+            cmd: ["ollama", "rm", model],
+            tty: true
+        });
+    }
+
+    public async list(name: string | undefined): Promise<void> {
+        const service = this.config.getServiceOrDefault(name);
+
+        await this.dockerService.exec(service.containerName, {
+            cmd: ["ollama", "list"],
             tty: true
         });
     }

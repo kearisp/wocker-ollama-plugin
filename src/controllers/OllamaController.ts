@@ -1,5 +1,6 @@
 import {
     Controller,
+    Completion,
     Description,
     Param,
     Command,
@@ -10,6 +11,7 @@ import {OllamaService} from "../services/OllamaService";
 
 
 @Controller()
+@Description("Ollama commands")
 export class OllamaController {
     public constructor(
         protected readonly ollamaService: OllamaService
@@ -19,24 +21,16 @@ export class OllamaController {
     @Description("Creates a new Ollama service. Specify the optional name or enter it when prompted.")
     public async create(
         @Param("name")
+        @Description("Unique identifier for the Ollama service instance")
         name?: string,
-        @Option("image", {
-            type: "string",
-            alias: "i",
-            description: "The image name to start the service with"
-        })
+        @Option("image", "i")
+        @Description("Docker image name for the Ollama service (e.g., 'ollama/ollama')")
         imageName?: string,
-        @Option("image-version", {
-            type: "string",
-            alias: "I",
-            description: "The image version to start the service with"
-        })
+        @Option("image-version", "I")
+        @Description("Specific version tag for the Docker image (e.g., 'latest', '0.1.0')")
         imageVersion?: string,
-        @Option("volume", {
-            type: "string",
-            alias: "v",
-            description: "Specify volume name"
-        })
+        @Option("volume", "v")
+        @Description("Name of the Docker volume to persist Ollama data")
         volume?: string
     ): Promise<void> {
         await this.ollamaService.create({
@@ -51,24 +45,16 @@ export class OllamaController {
     @Description("Upgrade ollama service configuration.")
     public async upgrade(
         @Param("name")
+        @Description("Name of the Ollama service instance to upgrade")
         name?: string,
-        @Option("image", {
-            type: "string",
-            alias: "i",
-            description: "The image name to start the service with"
-        })
+        @Option("image", "i")
+        @Description("Docker image name for the Ollama service (e.g., 'ollama/ollama')")
         imageName?: string,
-        @Option("image-version", {
-            type: "string",
-            alias: "I",
-            description: "The image version to start the service with"
-        })
+        @Option("image-version", "I")
+        @Description("Specific version tag for the Docker image (e.g., 'latest', '0.1.0')")
         imageVersion?: string,
-        @Option("volume", {
-            type: "string",
-            alias: "v",
-            description: "Specify volume name"
-        })
+        @Option("volume", "v")
+        @Description("Name of the Docker volume to persist Ollama data")
         volume?: string
     ): Promise<void> {
         await this.ollamaService.upgrade({
@@ -84,17 +70,11 @@ export class OllamaController {
     public async destroy(
         @Param("name")
         name: string,
-        @Option("force", {
-            type: "boolean",
-            alias: "f",
-            description: "Force deletion"
-        })
+        @Option("force", "f")
+        @Description("Force deletion")
         force?: boolean,
-        @Option("yes", {
-            type: "boolean",
-            alias: "y",
-            description: "Automatically confirm deletion"
-        })
+        @Option("yes", "y")
+        @Description("Automatically confirm deletion")
         yes?: boolean
     ): Promise<void> {
         await this.ollamaService.destroy(name, force, yes);
@@ -111,10 +91,8 @@ export class OllamaController {
     public async start(
         @Param("name")
         name?: string,
-        @Option("restart", {
-            alias: "r",
-            description: "Restarting ollama service"
-        })
+        @Option("restart", "r")
+        @Description("Restarting ollama service")
         restart?: boolean
     ): Promise<void> {
         await this.ollamaService.start(name, restart);
@@ -138,14 +116,44 @@ export class OllamaController {
         return this.ollamaService.use(name);
     }
 
-    @Command("ollama:run <name> <model>")
+    @Command("ollama:run <model>")
     @Description("Runs ollama model")
     public async run(
-        @Param("name")
-        name: string,
         @Param("model")
-        model: string
+        @Description("Name of the AI model to run (e.g., 'llama2', 'mistral')")
+        model: string,
+        @Option("name", "n")
+        @Description("Name of the Ollama service instance to run the model on")
+        name?: string
     ): Promise<void> {
         await this.ollamaService.run(name, model);
+    }
+
+    @Command("ollama:list")
+    @Description("Lists all available models in the Ollama service")
+    public async modelList(
+        @Option("name", "n")
+        @Description("Name of the Ollama service instance to list models from")
+        name?: string
+    ): Promise<void> {
+        await this.ollamaService.list(name);
+    }
+
+    @Command("ollama:rm <model>")
+    @Description("Removes a specified model from the Ollama service")
+    public async rm(
+        @Param("model")
+        @Description("Name of the model to remove")
+        model: string,
+        @Option("name", "n")
+        @Description("Name of the Ollama service instance to remove the model from")
+        name?: string
+    ): Promise<void> {
+        await this.ollamaService.rm(name, model);
+    }
+
+    @Completion("name")
+    public getServiceNames(): string[] {
+        return this.ollamaService.services.map((service) => service.name);
     }
 }
