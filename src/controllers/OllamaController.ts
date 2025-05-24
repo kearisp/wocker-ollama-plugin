@@ -6,7 +6,6 @@ import {
     Command,
     Option
 } from "@wocker/core";
-
 import {OllamaService} from "../services/OllamaService";
 
 
@@ -129,7 +128,7 @@ export class OllamaController {
         await this.ollamaService.run(name, model);
     }
 
-    @Command("ollama:list")
+    @Command("ollama:models")
     @Description("Lists all available models in the Ollama service")
     public async modelList(
         @Option("name", "n")
@@ -150,6 +149,15 @@ export class OllamaController {
         name?: string
     ): Promise<void> {
         await this.ollamaService.rm(name, model);
+    }
+
+    @Command("ollama:logs")
+    public async logs(
+        @Param("name")
+        @Description("Name of the service")
+        name?: string
+    ) {
+        await this.ollamaService.logs(name);
     }
 
     @Completion("name")

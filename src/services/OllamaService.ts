@@ -267,4 +267,10 @@ export class OllamaService {
             tty: true
         });
     }
+
+    public async logs(name?: string) {
+        const service = this.config.getServiceOrDefault(name);
+
+        await this.dockerService.logs(service.containerName);
+    }
 }
