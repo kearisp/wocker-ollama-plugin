@@ -10,7 +10,6 @@ import {
 } from "@wocker/core";
 import CliTable from "cli-table3";
 import {promptInput, promptConfirm} from "@wocker/utils";
-
 import {Config} from "../makes/Config";
 import {Service, ServiceProps} from "../makes/Service";
 
@@ -38,23 +37,7 @@ export class OllamaService {
 
     public get config(): Config {
         if(!this._config) {
-            const fs = this.fs;
-
-            const data = fs.exists("config.json")
-                ? fs.readJSON("config.json")
-                : {};
-
-            this._config = new class extends Config {
-                public save(): void {
-                    if(!fs.exists()) {
-                        fs.mkdir("", {
-                            recursive: true
-                        });
-                    }
-
-                    fs.writeJSON("config.json", this.toObject());
-                }
-            }(data);
+            this._config = Config.make(this.fs);
         }
 
         return this._config;

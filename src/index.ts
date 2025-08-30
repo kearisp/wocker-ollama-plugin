@@ -1,5 +1,4 @@
 import {Plugin, PluginConfigService} from "@wocker/core";
-
 import {OllamaController} from "./controllers/OllamaController";
 import {OllamaService} from "./services/OllamaService";
 

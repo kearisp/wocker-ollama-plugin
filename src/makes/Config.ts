@@ -1,3 +1,4 @@
+import {FileSystem} from "@wocker/core";
 import {Service, ServiceProps} from "./Service";
 
 
@@ -91,4 +92,22 @@ export abstract class Config {
     }
 
     public abstract save(): void;
+
+    public static make(fs: FileSystem): Config {
+        const data = fs.exists("config.json")
+            ? fs.readJSON("config.json")
+            : {};
+
+        return new class extends Config {
+            public save(): void {
+                if(!fs.exists()) {
+                    fs.mkdir("", {
+                        recursive: true
+                    });
+                }
+
+                fs.writeJSON("config.json", this.toObject());
+            }
+        }(data);
+    }
 }
