@@ -18,7 +18,7 @@ npm i -g @wocker/ws
 ```
 
 ```shell
-ws plugin:add ollama
+ws plugin:install ollama
 ```
 
 
