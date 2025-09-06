@@ -16,6 +16,12 @@ export class OllamaController {
         protected readonly ollamaService: OllamaService
     ) {}
 
+    @Command("ollama:ls")
+    @Description("Lists all available Ollama instances in a tabular format")
+    public async list(): Promise<string> {
+        return this.ollamaService.listTable();
+    }
+
     @Command("ollama:create [name]")
     @Description("Creates a new Ollama service. Specify the optional name or enter it when prompted.")
     public async create(
@@ -68,6 +74,7 @@ export class OllamaController {
     @Description("Destroys a specified Ollama instance with options to force and confirm deletion.")
     public async destroy(
         @Param("name")
+        @Description("Name of the Ollama service instance to run the model on")
         name: string,
         @Option("force", "f")
         @Description("Force deletion")
@@ -79,16 +86,11 @@ export class OllamaController {
         await this.ollamaService.destroy(name, force, yes);
     }
 
-    @Command("ollama:ls")
-    @Description("Lists all available Ollama instances in a tabular format")
-    public async list(): Promise<string> {
-        return this.ollamaService.listTable();
-    }
-
     @Command("ollama:start [name]")
     @Description("Starting ollama service")
     public async start(
         @Param("name")
+        @Description("Name of the Ollama service instance to run the model on")
         name?: string,
         @Option("restart", "r")
         @Description("Restarting ollama service")
@@ -101,6 +103,7 @@ export class OllamaController {
     @Description("Stopping ollama service")
     public async stop(
         @Param("name")
+        @Description("Name of the Ollama service instance to run the model on")
         name?: string
     ): Promise<void> {
         await this.ollamaService.stop(name);
@@ -111,7 +114,7 @@ export class OllamaController {
     public async use(
         @Param("name")
         name?: string
-    ) {
+    ): Promise<string | void> {
         return this.ollamaService.use(name);
     }
 
@@ -153,10 +156,10 @@ export class OllamaController {
 
     @Command("ollama:logs")
     public async logs(
-        @Param("name")
+        @Option("name", "n")
         @Description("Name of the service")
         name?: string
-    ) {
+    ): Promise<void> {
         await this.ollamaService.logs(name);
     }
 
