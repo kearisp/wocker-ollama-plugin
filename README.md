@@ -4,7 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@wocker/ollama-plugin.svg)](https://www.npmjs.com/package/@wocker/ollama-plugin)
 [![Publish](https://github.com/kearisp/wocker-ollama-plugin/actions/workflows/publish-latest.yml/badge.svg?event=release)](https://github.com/kearisp/wocker-ollama-plugin/actions/workflows/publish-latest.yml)
-[![License](https://img.shields.io/npm/l/@wocker/ollama-plugin)](https://github.com/kearisp/wocker-ollama-plugin/blob/main/LICENSE)
+[![License](https://img.shields.io/npm/l/@wocker/ollama-plugin)](https://github.com/kearisp/wocker-ollama-plugin/blob/master/LICENSE)
 
 [![npm total downloads](https://img.shields.io/npm/dt/@wocker/ollama-plugin.svg)](https://www.npmjs.com/package/@wocker/ollama-plugin)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/@wocker/ollama-plugin)](https://bundlephobia.com/package/@wocker/ollama-plugin)

@@ -1,6 +1,6 @@
 {
     "name": "@wocker/ollama-plugin",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "author": "Kris Papercut <krispcut@gmail.com>",
     "description": "Ollama plugin for wocker",
     "license": "MIT",
